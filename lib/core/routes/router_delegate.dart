@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
 import 'package:fstory/presentation/screen/camera_page.dart';
@@ -6,8 +5,6 @@ import 'package:fstory/presentation/screen/profile_page.dart';
 import 'package:fstory/presentation/screen/register_page.dart';
 import 'package:fstory/presentation/screen/upload_story_page.dart';
 import 'package:provider/provider.dart';
-
-import '../../domain/entity/login_entity.dart';
 import '../../presentation/provider/story_provider.dart';
 import '../../presentation/screen/auth_page.dart';
 import '../../presentation/screen/detail_page.dart';
@@ -53,23 +50,29 @@ class MyRouterDelegate extends RouterDelegate
         if (isLoggedIn)
           MaterialPage(
             child: FeedsPage(
-                onSelectedStory: (storyId) {
-                  selectedStory = storyId;
-                  final storyProvider = context.read<StoryProvider>();
-                  final token = UserSharedPreferences.getUserPrefs().token;
-                  storyProvider.getStoryDetail(token, storyId);
-                  notifyListeners();
-                },
-                isUploadStorySelected: () {
-                  isUploadStorySelected = true;
-                  context.read<StoryProvider>().setPostStoryInitState();
-                  notifyListeners();
-                },
-                isProfileSelected: () {
-                  isProfileSelected = true;
-                  notifyListeners();
-                },
-                userLoginEntity: UserSharedPreferences.getUserPrefs()),
+              onSelectedStory: (storyId) {
+                selectedStory = storyId;
+                final storyProvider = context.read<StoryProvider>();
+                final token = UserSharedPreferences.getUserPrefs().token;
+                storyProvider.getStoryDetail(token, storyId);
+                notifyListeners();
+              },
+              isUploadStorySelected: () {
+                isUploadStorySelected = true;
+                context.read<StoryProvider>().setPostStoryInitState();
+                notifyListeners();
+              },
+              isProfileSelected: () {
+                isProfileSelected = true;
+                notifyListeners();
+              },
+              userLoginEntity: UserSharedPreferences.getUserPrefs(),
+              loggingOut: () {
+                isLoggedIn = false;
+                isProfileSelected = false;
+                notifyListeners();
+              },
+            ),
           ),
         if (isLoggedIn && isUploadStorySelected)
           MaterialPage(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fstory/core/utils/converter.dart';
+import 'package:fstory/presentation/widget/loading.dart';
 import 'package:provider/provider.dart';
-
+import 'package:timeago/timeago.dart' as timeago;
 import '../provider/story_provider.dart';
 
 class DetailPage extends StatefulWidget {
@@ -23,63 +23,84 @@ class _DetailPageState extends State<DetailPage> {
           child: Consumer<StoryProvider>(
             builder: (ctx, provider, _) {
               if (provider.storyDetailState == StoryDetailState.loading) {
-                return const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Please wait...",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.deepOrangeAccent),
-                    ),
-                    CircularProgressIndicator(color: Colors.deepOrangeAccent)
-                  ],
-                );
+                return const Loading();
               } else if (provider.storyDetailState ==
                   StoryDetailState.hasData) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 300,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100)),
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height / 3,
+                          width: double.infinity,
                           child: Image.network(
-                              provider.storyDetailEntity?.photoUrl ?? ""),
+                            provider.storyDetailEntity?.photoUrl ?? '',
+                            fit: BoxFit.cover,
+                            loadingBuilder: (_, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              } else {
+                                return const Loading();
+                              }
+                            },
+                            errorBuilder: (_, __, ___) {
+                              return Center(
+                                child: Icon(
+                                  Icons.broken_image,
+                                  size: MediaQuery.of(context).size.width * 0.8,
+                                  color: Colors.grey[400],
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      Text(
-                        "By ${provider.storyDetailEntity?.name}",
-                        style: const TextStyle(color: Colors.deepOrangeAccent),
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      const Text(
-                        "Description:",
-                        style: TextStyle(color: Colors.deepOrangeAccent),
-                        textAlign: TextAlign.center,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            provider.storyDetailEntity?.name ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
+                          ),
+                          Text(
+                            timeago.format(
+                                provider.storyDetailEntity?.createdAt ?? DateTime.now(),
+                                locale: 'en'),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
-                        height: 4,
+                        height: 8,
                       ),
                       Text(
                         provider.storyDetailEntity?.description ?? "",
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        convertDateTime(
-                            provider.storyDetailEntity?.createdAt.toString()),
-                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                        maxLines: 3,
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontWeight: FontWeight.w300, fontSize: 12),
                       ),
                     ],
                   ),
@@ -97,18 +118,7 @@ class _DetailPageState extends State<DetailPage> {
                   style: const TextStyle(color: Colors.deepOrangeAccent),
                 );
               } else {
-                return const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Please wait...",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.deepOrangeAccent),
-                    ),
-                    CircularProgressIndicator(color: Colors.deepOrangeAccent)
-                  ],
-                );
+                return const Loading();
               }
             },
           ),

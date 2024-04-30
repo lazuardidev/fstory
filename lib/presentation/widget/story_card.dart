@@ -1,88 +1,75 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fstory/domain/entity/story_entity.dart';
+import 'package:fstory/presentation/provider/story_provider.dart';
+import 'package:fstory/presentation/widget/loading.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../domain/entity/detail_page_argument.dart';
+class StoryCard extends StatelessWidget {
+  final StoryEntity? story;
+  final void Function()? onClick;
 
-class StoryCard extends StatelessWidget{
-  final String imageUrl;
-  final String username;
-  final DetailPageArgument detailPageArgument;
-
-  const StoryCard({
-    super.key,
-    required this.imageUrl,
-    required this.detailPageArgument,
-    required this.username
-  });
+  const StoryCard({super.key, this.story, this.onClick});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          // GO TO DETAIL PAGE
-        },
-        child: Wrap(
+    return Card(
+      elevation: 8,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(
-              alignment: Alignment.bottomLeft,
-              children: [
-                Card(
-                  elevation: 4,
-                  shadowColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    //set border radius more than 50% of height and width to make circle
-                  ),
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                      child: Image.network(
-                        imageUrl,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                              child: Image.asset("images/placeholder.jpg")
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: SizedBox(
+                height: 120,
+                width: double.infinity,
+                child: Image.network(
+                  'https://story-api.dicoding.dev/images/stories/photos-1641623658595_dummy-pic.png',
+                  fit: BoxFit.cover,
+                  loadingBuilder: (_, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    } else {
+                      return const Loading();
+                    }
+                  },
+                  errorBuilder: (_, __, ___) {
+                    return Icon(
+                      Icons.broken_image,
+                      size: 100,
+                      color: Colors.grey[400],
+                    );
+                  },
                 ),
-                Card(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
-                    ),
-                    //set border radius more than 50% of height and width to make circle
+              ),
+            ),
+            Text(
+              'story.name',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
                   ),
-                  color: Colors.black54,
-                  child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                      child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 2
-                            ),
-                            child: Text(
-                              username,
-                              style: GoogleFonts.poppins(
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.white
-                              )
-                            ),
-                          )
-                      )
-                  ),
-                ),
-              ],
-            )
+            ),
+            Text(
+              'story.description',
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.start,
+              maxLines: 3,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall!
+                  .copyWith(fontWeight: FontWeight.w300, fontSize: 12),
+            ),
           ],
-        )
+        ),
+      ),
     );
   }
-
 }

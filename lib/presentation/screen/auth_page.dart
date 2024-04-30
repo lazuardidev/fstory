@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:fstory/common/styles.dart';
+import 'package:fstory/presentation/widget/btn_primary.dart';
+import 'package:fstory/presentation/widget/loading.dart';
 import 'package:provider/provider.dart';
-
 import '../provider/auth_provider.dart';
-import '../provider/story_provider.dart';
 
 class AuthPage extends StatefulWidget {
   final Function() isLoggedIn;
@@ -34,93 +34,73 @@ class _AuthPageState extends State<AuthPage> {
               width: 150,
             ),
           ),
+          const SizedBox(height: 32),
+          Text(
+            "Email",
+            textAlign: TextAlign.start,
+            style: Theme.of(context).textTheme.bodyLarge!,
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
+              hintText: 'Enter your email...',
+              hintStyle: Theme.of(context).textTheme.bodyLarge,
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: primaryGray, width: 1),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: primaryColor, width: 1),
+              ),
+            ),
+            onChanged: (inputEmail) {
+              setState(() {
+                _email = inputEmail;
+              });
+            },
+          ),
           const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text("Email",
-                textAlign: TextAlign.start,
-                style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold)),
+          Text(
+            "Password",
+            textAlign: TextAlign.start,
+            style: Theme.of(context).textTheme.bodyLarge!,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter your email...',
+          const SizedBox(height: 8),
+          TextField(
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
+              hintText: 'Enter your password...',
+              hintStyle: Theme.of(context).textTheme.bodyLarge,
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: primaryGray, width: 1),
               ),
-              onChanged: (inputEmail) {
-                setState(() {
-                  _email = inputEmail;
-                });
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text("Password",
-                textAlign: TextAlign.start,
-                style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold)),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter your password...',
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: primaryColor, width: 1),
               ),
-              onChanged: (inputPassword) {
-                setState(() {
-                  _password = inputPassword;
-                });
-              },
-              obscureText: true,
             ),
+            onChanged: (inputPassword) {
+              setState(() {
+                _password = inputPassword;
+              });
+            },
+            obscureText: true,
           ),
+          const SizedBox(height: 48),
           context.watch<AuthProvider>().loginLoading
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Please wait...",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.deepOrangeAccent),
-                      ),
-                      CircularProgressIndicator(color: Colors.deepOrangeAccent)
-                    ],
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Container(
-                    height: 44.0,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Color(0xFFF44F2B), Color(0xFFFF9D88)])),
-                    child: TextButton(
-                      onPressed: () {
-                        _loginUser();
-                      },
-                      child: Text(
-                        'Login',
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
+              ? const Loading()
+              : BtnPrimary(
+                  title: 'Login',
+                  onClick: () {
+                    _loginUser();
+                  },
                 ),
           const SizedBox(height: 16),
           Row(
@@ -129,10 +109,7 @@ class _AuthPageState extends State<AuthPage> {
             children: [
               Text(
                 "Doesn't have account?",
-                style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: Colors.black),
+                style: Theme.of(context).textTheme.bodyLarge!,
               ),
               GestureDetector(
                 onTap: () {
@@ -142,10 +119,10 @@ class _AuthPageState extends State<AuthPage> {
                 },
                 child: Text(
                   " Register Now",
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.black),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Colors.blue),
                 ),
               )
             ],
@@ -164,27 +141,24 @@ class _AuthPageState extends State<AuthPage> {
         const SnackBar(content: Text("Please insert email and password!")),
       );
       return;
-    } else if (!RegExp(
+    }
+    if (!RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(_email)) {
       scaffoldMessengerState.showSnackBar(
         const SnackBar(content: Text("Please enter valid email address!")),
       );
       return;
-    } else if (_password.length < 8) {
+    }
+    if (_password.length < 8) {
       scaffoldMessengerState.showSnackBar(
         const SnackBar(
             content: Text("Password must contain minimal 8 character")),
       );
       return;
-    } else if (_password.length >= 8) {
-      await authProvider.login(_email, _password);
-    } else {
-      scaffoldMessengerState.showSnackBar(
-        const SnackBar(content: Text("Please fill the form correctly!")),
-      );
-      return;
     }
+    await authProvider.login(_email, _password);
+
     Provider.of<AuthProvider>(context, listen: false).errorMsg == null
         ? {
             scaffoldMessengerState.showSnackBar(

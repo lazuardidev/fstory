@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
-import 'package:image_picker/image_picker.dart';
 import 'package:fstory/domain/entity/story_detail_entity.dart';
 import 'package:fstory/domain/repository/repository.dart';
 
@@ -108,10 +107,9 @@ class StoryProvider extends ChangeNotifier {
     _errorMsg = null;
     _postResponse = null;
 
-    final bytes = await imageFile!.readAsBytes();
-    final bytesList = bytes.toList();
+    final Uint8List uint8List = Uint8List.fromList(bytes);
     final responseFold =
-        await repository.postStory(token, desc, bytesList, filename);
+        await repository.postStory(token, desc, uint8List, filename);
     responseFold.fold((l) {
       _errorMsg = l.msg;
       _uploadStoryState = UploadStoryState.error;

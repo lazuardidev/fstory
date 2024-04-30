@@ -1,8 +1,9 @@
 import 'dart:io';
-
-import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fstory/common/styles.dart';
+import 'package:fstory/presentation/widget/btn_primary.dart';
+import 'package:fstory/presentation/widget/loading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fstory/domain/entity/login_entity.dart';
 import 'package:fstory/presentation/provider/story_provider.dart';
@@ -33,77 +34,55 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: const Text("Camera Project"),
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                  color: const Color(0xFFDBDBDB),
-                ),
-                color: Colors.transparent,
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_outlined,
-                    color: Colors.black),
-                onPressed: () {
-                  widget.isBackToFeedsPage();
-                },
-              ),
-            ),
-          )),
+      appBar: AppBar(title: const Text("Upload Story")),
       body: SafeArea(
-          child: ListView(padding: const EdgeInsets.only(top: 64), children: [
-        SizedBox(
-          child: context.watch<StoryProvider>().imagePath == null
-              ? const Align(
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Icons.image,
-                    size: 100,
-                  ),
-                )
-              : _showImage(),
-        ),
-        SizedBox(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () => _onGalleryView(),
-                child: const Text("Gallery"),
-              ),
-              ElevatedButton(
-                onPressed: () => _onCameraView(),
-                child: const Text("Camera"),
-              ),
-              ElevatedButton(
-                onPressed: () => _onCustomCameraView(),
-                child: const Text("Custom Camera"),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        const Text(
-          "Describe your post story:",
-          style: TextStyle(color: Colors.deepOrangeAccent),
-          textAlign: TextAlign.center,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter your description...',
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          children: [
+            SizedBox(
+              child: context.watch<StoryProvider>().imagePath == null
+                  ? const Align(
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.image,
+                        size: 300,
+                      ),
+                    )
+                  : _showImage(),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => _onGalleryView(),
+                  child: const Text("Gallery"),
+                ),
+                ElevatedButton(
+                  onPressed: () => _onCameraView(),
+                  child: const Text("Camera"),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              maxLines: 5,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
+                hintText: 'Enter description...',
+                hintStyle: Theme.of(context).textTheme.bodyLarge,
+                filled: true,
+                fillColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: const BorderSide(color: primaryGray, width: 1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: const BorderSide(color: primaryColor, width: 1),
+                ),
               ),
               onChanged: (inputDesc) {
                 setState(() {
@@ -112,110 +91,49 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
               },
               keyboardType: TextInputType.multiline,
             ),
-          ),
+            const SizedBox(
+              height: 40,
+            ),
+            Consumer<StoryProvider>(
+              builder: (ctx, provider, _) {
+                if (provider.uploadStoryState == UploadStoryState.loading) {
+                  return const Center(
+                    child: Loading(),
+                  );
+                } else if (provider.uploadStoryState == UploadStoryState.init) {
+                  return BtnPrimary(
+                    title: 'Upload',
+                    onClick: () {
+                      _onUpload(provider);
+                    },
+                  );
+                } else if (provider.uploadStoryState ==
+                    UploadStoryState.error) {
+                  _showSnackbar(provider.errorMsg);
+                  return BtnPrimary(
+                    title: 'Upload',
+                    onClick: () {
+                      _onUpload(provider);
+                    },
+                  );
+                } else if (provider.uploadStoryState ==
+                    UploadStoryState.hasData) {
+                  WidgetsBinding.instance.addPostFrameCallback(
+                      (_) => _showSnackbar("Sukses upload story"));
+                  return BtnPrimary(
+                    title: 'Upload',
+                    onClick: () {
+                      _onUpload(provider);
+                    },
+                  );
+                } else {
+                  return const Loading();
+                }
+              },
+            )
+          ],
         ),
-        Consumer<StoryProvider>(
-          builder: (ctx, provider, _) {
-            if (provider.uploadStoryState == UploadStoryState.loading) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Please wait...",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.deepOrangeAccent),
-                    ),
-                    CircularProgressIndicator(color: Colors.deepOrangeAccent)
-                  ],
-                ),
-              );
-            } else if (provider.uploadStoryState == UploadStoryState.error) {
-              _showSnackbar(provider.errorMsg);
-              return Padding(
-                padding: const EdgeInsets.only(top: 8, left: 32, right: 32),
-                child: Container(
-                  height: 60.0,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0xFFF44F2B), Color(0xFFFF9D88)])),
-                  child: TextButton(
-                    onPressed: () {
-                      _onUpload(provider);
-                    },
-                    child: const Text(
-                      'Upload Story',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              );
-            } else if (provider.uploadStoryState == UploadStoryState.hasData) {
-              WidgetsBinding.instance.addPostFrameCallback(
-                  (_) => _showSnackbar("Sukses upload story"));
-              return Padding(
-                padding: const EdgeInsets.only(top: 8, left: 32, right: 32),
-                child: Container(
-                  height: 60.0,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0xFFF44F2B), Color(0xFFFF9D88)])),
-                  child: TextButton(
-                    onPressed: () {
-                      _onUpload(provider);
-                    },
-                    child: const Text(
-                      'Upload Story',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.only(top: 8, left: 32, right: 32),
-                child: Container(
-                  height: 60.0,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0xFFF44F2B), Color(0xFFFF9D88)])),
-                  child: TextButton(
-                    onPressed: () {
-                      _onUpload(provider);
-                    },
-                    child: const Text(
-                      'Upload Story',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              );
-            }
-          },
-        )
-      ])),
+      ),
     );
   }
 
@@ -227,10 +145,10 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
           ScaffoldMessenger.of(context);
       scaffoldMessengerState.showSnackBar(
         const SnackBar(
-            content: Text(
-                "Please insert your story pics and fill the description!")),
+          content:
+              Text("Please insert your story pics and fill the description!"),
+        ),
       );
-
       return;
     }
     final fileName = imageFile.name;
@@ -287,13 +205,6 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
       provider.setImagePath(pickedFile.path);
       provider.setImageFile(pickedFile);
     }
-  }
-
-  _onCustomCameraView() async {
-    final cameras = await availableCameras();
-    final provider = context.read<StoryProvider>();
-    provider.setListCameraDescription(cameras);
-    widget.goToCameraPage();
   }
 
   Widget _showImage() {
