@@ -10,10 +10,10 @@ abstract class Failure extends Equatable{
 }
 
 class ServerFailure extends Failure{
-  const ServerFailure(String msg) : super(msg);
+  const ServerFailure(super.msg);
 }
 
 class ConnectionFailure extends Failure{
-  const ConnectionFailure(String msg) : super(msg);
+  const ConnectionFailure(super.msg);
 }
 

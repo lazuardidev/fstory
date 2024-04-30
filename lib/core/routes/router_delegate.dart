@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
-import 'package:fstory/presentation/screen/camera_page.dart';
-import 'package:fstory/presentation/screen/profile_page.dart';
 import 'package:fstory/presentation/screen/register_page.dart';
 import 'package:fstory/presentation/screen/upload_story_page.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +15,6 @@ class MyRouterDelegate extends RouterDelegate
   bool isLoggedIn = false;
   bool isRegisteredSelected = false;
   bool isUploadStorySelected = false;
-  bool isProfileSelected = false;
-  bool isCameraSelected = false;
 
   MyRouterDelegate() : _navKey = GlobalKey<NavigatorState>() {
     _init();
@@ -62,14 +58,9 @@ class MyRouterDelegate extends RouterDelegate
                 context.read<StoryProvider>().setPostStoryInitState();
                 notifyListeners();
               },
-              isProfileSelected: () {
-                isProfileSelected = true;
-                notifyListeners();
-              },
               userLoginEntity: UserSharedPreferences.getUserPrefs(),
               loggingOut: () {
                 isLoggedIn = false;
-                isProfileSelected = false;
                 notifyListeners();
               },
             ),
@@ -85,24 +76,6 @@ class MyRouterDelegate extends RouterDelegate
               notifyListeners();
             },
             userLoginEntity: UserSharedPreferences.getUserPrefs(),
-            goToCameraPage: () {
-              isCameraSelected = true;
-              notifyListeners();
-            },
-          )),
-        if (isLoggedIn && isProfileSelected)
-          MaterialPage(
-              child: ProfilePage(
-            isBackToFeedsPage: () {
-              isProfileSelected = false;
-              notifyListeners();
-            },
-            loggingOut: () {
-              isLoggedIn = false;
-              isProfileSelected = false;
-              notifyListeners();
-            },
-            username: UserSharedPreferences.getUserPrefs().name,
           )),
         if (isRegisteredSelected)
           MaterialPage(
@@ -117,35 +90,16 @@ class MyRouterDelegate extends RouterDelegate
             storyId: selectedStory ?? "",
             token: UserSharedPreferences.getUserPrefs().token,
           )),
-        if (isLoggedIn && isCameraSelected)
-          MaterialPage(
-              child: CameraPage(
-            cameras: context.read<StoryProvider>().listCameraDescription!,
-            backToUploadPage: () {
-              isCameraSelected = false;
-              notifyListeners();
-            },
-          ))
       ],
       onPopPage: (route, result) {
         final didPop = route.didPop(result);
-
         if (!didPop) {
           return false;
         }
-
-        if (isCameraSelected) {
-          isCameraSelected = !isCameraSelected;
-          notifyListeners();
-          return true;
-        }
-
         isRegisteredSelected = false;
         selectedStory = null;
         isUploadStorySelected = false;
-        isProfileSelected = false;
         notifyListeners();
-
         return true;
       },
     );

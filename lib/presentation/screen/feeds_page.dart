@@ -10,7 +10,6 @@ import 'package:timeago/timeago.dart' as timeago;
 class FeedsPage extends StatefulWidget {
   final Function(String) onSelectedStory;
   final Function() isUploadStorySelected;
-  final Function() isProfileSelected;
   final Function() loggingOut;
   final LoginEntity userLoginEntity;
 
@@ -18,7 +17,6 @@ class FeedsPage extends StatefulWidget {
       {super.key,
       required this.onSelectedStory,
       required this.isUploadStorySelected,
-      required this.isProfileSelected,
       required this.userLoginEntity,
       required this.loggingOut});
 

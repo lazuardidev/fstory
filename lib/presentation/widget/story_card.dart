@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/domain/entity/story_entity.dart';
-import 'package:fstory/presentation/provider/story_provider.dart';
 import 'package:fstory/presentation/widget/loading.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class StoryCard extends StatelessWidget {
   final StoryEntity? story;

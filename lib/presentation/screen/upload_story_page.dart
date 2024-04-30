@@ -11,13 +11,11 @@ import 'package:provider/provider.dart';
 
 class UploadStoryPage extends StatefulWidget {
   final Function() isBackToFeedsPage;
-  final Function() goToCameraPage;
   final LoginEntity userLoginEntity;
   const UploadStoryPage(
       {super.key,
       required this.isBackToFeedsPage,
-      required this.userLoginEntity,
-      required this.goToCameraPage});
+      required this.userLoginEntity});
 
   @override
   State<UploadStoryPage> createState() => _UploadStoryPageState();
