@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:fstory/domain/entity/story_entity.dart';
 
 class StoryModel {

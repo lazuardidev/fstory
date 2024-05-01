@@ -2,21 +2,21 @@ import 'package:dartz/dartz.dart';
 import 'package:fstory/domain/entity/login_entity.dart';
 import 'package:fstory/domain/entity/story_detail_entity.dart';
 import 'package:fstory/domain/entity/story_entity.dart';
-import 'package:fstory/data/remotedatasource/remotedata_source.dart';
+import 'package:fstory/data/datasources/data_source.dart';
 import 'package:fstory/common/exception.dart';
 import 'package:fstory/common/failure.dart';
 import '../../domain/repository/repository.dart';
 
 class RepositoryImpl extends Repository {
-  final RemoteDataSource remoteDataSource;
+  final DataSource dataSource;
 
-  RepositoryImpl({required this.remoteDataSource});
+  RepositoryImpl({required this.dataSource});
 
   @override
   Future<Either<Failure, StoryDetailEntity>> getStoryDetail(
       String token, String id) async {
     try {
-      final storyDetailModel = await remoteDataSource.getStoryDetail(id, token);
+      final storyDetailModel = await dataSource.getStoryDetail(id, token);
       final storyDetailEntity = storyDetailModel.modelToEntity();
       return Right(storyDetailEntity);
     } on ServerException catch (e) {
@@ -30,7 +30,7 @@ class RepositoryImpl extends Repository {
   @override
   Future<Either<Failure, List<StoryEntity>>> getStoryList(String token) async {
     try {
-      final listStoryModel = await remoteDataSource.getStoryList(token);
+      final listStoryModel = await dataSource.getStoryList(token);
       final storyDetailEntity = listStoryModel
           .map((storyModel) => storyModel.modelToEntity())
           .toList();
@@ -46,7 +46,7 @@ class RepositoryImpl extends Repository {
   @override
   Future<Either<Failure, LoginEntity>> login(String email, String pass) async {
     try {
-      final loginModel = await remoteDataSource.login(email, pass);
+      final loginModel = await dataSource.login(email, pass);
       final loginEntity = loginModel.modelToEntity();
       return Right(loginEntity);
     } on ServerException catch (e) {
@@ -61,7 +61,7 @@ class RepositoryImpl extends Repository {
       String token, String desc, List<int> bytes, String fileName) async {
     try {
       final storyResponse =
-          await remoteDataSource.postStory(token, desc, bytes, fileName);
+          await dataSource.postStory(token, desc, bytes, fileName);
       return Right(storyResponse);
     } on ServerException catch (e) {
       return Left(ServerFailure("Upload failed!\nError Info: ${e.msg}"));
@@ -74,8 +74,7 @@ class RepositoryImpl extends Repository {
   Future<Either<Failure, String>> register(
       String name, String email, String pass) async {
     try {
-      final registerResponse =
-          await remoteDataSource.register(name, email, pass);
+      final registerResponse = await dataSource.register(name, email, pass);
       return Right(registerResponse);
     } on ServerException catch (e) {
       return Left(ServerFailure("Register failed!\nError Info: ${e.msg}"));

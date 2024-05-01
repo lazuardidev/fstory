@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:fstory/data/remotedatasource/remotedata_source.dart';
+import 'package:fstory/data/datasources/data_source.dart';
 import 'package:fstory/data/repository/repository_impl.dart';
 import 'package:fstory/presentation/provider/auth_provider.dart';
 import 'package:fstory/presentation/provider/story_provider.dart';
@@ -14,11 +14,11 @@ Future init() async {
 
   // repository
   locator.registerLazySingleton<Repository>(
-      () => RepositoryImpl(remoteDataSource: locator()));
+      () => RepositoryImpl(dataSource: locator()));
 
   // remote data source
-  locator.registerLazySingleton<RemoteDataSource>(
-      () => RemoteDataSourceImpl(dio: locator()));
+  locator
+      .registerLazySingleton<DataSource>(() => DataSourceImpl(dio: locator()));
 
   // external
   locator.registerLazySingleton(() => Dio());

@@ -5,12 +5,12 @@ import 'package:fstory/common/exception.dart';
 import 'package:fstory/data/model/login_model.dart';
 import 'package:fstory/data/model/story_detail_model.dart';
 import 'package:fstory/data/model/story_model.dart';
-import 'package:fstory/data/remotedatasource/response/login_response.dart';
-import 'package:fstory/data/remotedatasource/response/server_response.dart';
-import 'package:fstory/data/remotedatasource/response/story_detail_response.dart';
-import 'package:fstory/data/remotedatasource/response/story_list_response.dart';
+import 'package:fstory/data/datasources/response/login_response.dart';
+import 'package:fstory/data/datasources/response/server_response.dart';
+import 'package:fstory/data/datasources/response/story_detail_response.dart';
+import 'package:fstory/data/datasources/response/story_list_response.dart';
 
-abstract class RemoteDataSource {
+abstract class DataSource {
   Future<List<StoryModel>> getStoryList(String token);
   Future<StoryDetailModel> getStoryDetail(String id, String token);
   Future<LoginModel> login(String email, String pass);
@@ -23,7 +23,7 @@ abstract class RemoteDataSource {
   );
 }
 
-class RemoteDataSourceImpl implements RemoteDataSource {
+class DataSourceImpl implements DataSource {
   final Dio dio;
   static const baseUrl = "https://story-api.dicoding.dev/v1";
   static const endpointRegister = "/register";
@@ -32,7 +32,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   static const endpointGetStories = "/stories?size=25";
   static const endpointGetDetail = "/stories/";
 
-  const RemoteDataSourceImpl({required this.dio});
+  const DataSourceImpl({required this.dio});
 
   @override
   Future<String> register(String name, String email, String pass) async {

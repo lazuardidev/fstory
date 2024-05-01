@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:fstory/domain/entity/login_entity.dart';
 
 class LoginModel {
