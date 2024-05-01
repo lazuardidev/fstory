@@ -35,7 +35,7 @@ class AuthNotifier extends ChangeNotifier {
             name: response.name,
             token: response.token));
     if (loginEntity != null) {
-      UserSharedPreferences.loginPrefs(loginEntity!);
+      UserSharedPreferences.loginPreference(loginEntity!);
     }
     _loginLoading = false;
     notifyListeners();

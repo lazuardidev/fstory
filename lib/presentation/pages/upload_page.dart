@@ -210,18 +210,11 @@ class _UploadPageState extends State<UploadPage> {
             imagePath.toString(),
             fit: BoxFit.contain,
           )
-        : Container(
-            height: 250,
-            width: 300,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(99)),
+        : SizedBox(
+            height: 300,
+            width: double.infinity,
             child: Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-                //set border radius more than 50% of height and width to make circle
-              ),
-              color: const Color(0xFFC7C7C7),
-              semanticContainer: true,
               child: Image.file(
                 File(imagePath.toString()),
                 fit: BoxFit.fill,

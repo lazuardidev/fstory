@@ -3,6 +3,7 @@ import 'package:fstory/common/styles.dart';
 import 'package:fstory/core/shared_preferences/user_shared_preferences.dart';
 import 'package:fstory/presentation/widgets/card_story.dart';
 import 'package:fstory/presentation/widgets/loading.dart';
+import 'package:fstory/presentation/widgets/response_message.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/login_entity.dart';
 import '../providers/story_notifier.dart';
@@ -46,7 +47,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           GestureDetector(
               onTap: () {
-                UserSharedPreferences.logoutPrefs();
+                UserSharedPreferences.logoutPreference();
                 widget.loggingOut();
               },
               child: const Padding(
@@ -103,20 +104,15 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           } else if (provider.getStoriesState == GetStoriesState.noData) {
-            return const Center(
-              child: Text(
-                "There are no data to be displayed...",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.deepOrangeAccent),
-              ),
+            return const ResponseMessage(
+              image: 'assets/images/no-data.png',
+              message: 'No Data',
             );
           } else if (provider.getStoriesState == GetStoriesState.error) {
-            return Center(
-              child: Text(
-                provider.errorMsg ?? "Error...",
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: primaryColor),
-              ),
+            return ResponseMessage(
+              image: 'assets/images/error.png',
+              message: "Error...\n${provider.errorMsg}",
+              onPressed: () => _fetchListStory(),
             );
           } else {
             return const Loading();

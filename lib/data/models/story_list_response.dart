@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../../models/story_model.dart';
+import 'story_model.dart';
 
 class StoryListResponse {
   bool error;

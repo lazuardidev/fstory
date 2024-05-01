@@ -8,26 +8,26 @@ class UserSharedPreferences {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  static Future loginPrefs(LoginEntity loginEntity) async {
+  static Future loginPreference(LoginEntity loginEntity) async {
     await sharedPreferences.setString(TOKEN_KEY, loginEntity.token);
     await sharedPreferences.setString(NAME_KEY, loginEntity.name);
     await sharedPreferences.setString(ID_KEY, loginEntity.userId);
     await sharedPreferences.setBool(IS_LOGIN_KEY, true);
   }
 
-  static Future logoutPrefs() async {
+  static Future logoutPreference() async {
     await sharedPreferences.remove(TOKEN_KEY);
     await sharedPreferences.remove(NAME_KEY);
     await sharedPreferences.remove(ID_KEY);
     await sharedPreferences.setBool(IS_LOGIN_KEY, false);
   }
 
-  static bool isUserLoggedInPrefs() {
+  static bool isUserLoggedInPreference() {
     final isLoggedIn = sharedPreferences.getBool(IS_LOGIN_KEY) ?? false;
     return isLoggedIn;
   }
 
-  static LoginEntity getUserPrefs() {
+  static LoginEntity getUserPreference() {
     final token = sharedPreferences.getString(TOKEN_KEY) ?? "";
     final name = sharedPreferences.getString(NAME_KEY) ?? "";
     final id = sharedPreferences.getString(ID_KEY) ?? "";

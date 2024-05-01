@@ -21,7 +21,7 @@ class MyRouterDelegate extends RouterDelegate
   }
 
   _init() async {
-    isLoggedIn = UserSharedPreferences.isUserLoggedInPrefs();
+    isLoggedIn = UserSharedPreferences.isUserLoggedInPreference();
     notifyListeners();
   }
 
@@ -49,7 +49,7 @@ class MyRouterDelegate extends RouterDelegate
               onSelectedStory: (storyId) {
                 selectedStory = storyId;
                 final storyNotifier = context.read<StoryNotifier>();
-                final token = UserSharedPreferences.getUserPrefs().token;
+                final token = UserSharedPreferences.getUserPreference().token;
                 storyNotifier.getStoryDetail(token, storyId);
                 notifyListeners();
               },
@@ -58,7 +58,7 @@ class MyRouterDelegate extends RouterDelegate
                 context.read<StoryNotifier>().setPostStoryInitState();
                 notifyListeners();
               },
-              userLoginEntity: UserSharedPreferences.getUserPrefs(),
+              userLoginEntity: UserSharedPreferences.getUserPreference(),
               loggingOut: () {
                 isLoggedIn = false;
                 notifyListeners();
@@ -70,12 +70,11 @@ class MyRouterDelegate extends RouterDelegate
               child: UploadPage(
             isBackToHomePage: () {
               isUploadSelected = false;
-              context
-                  .read<StoryNotifier>()
-                  .getListStory(UserSharedPreferences.getUserPrefs().token);
+              context.read<StoryNotifier>().getListStory(
+                  UserSharedPreferences.getUserPreference().token);
               notifyListeners();
             },
-            userLoginEntity: UserSharedPreferences.getUserPrefs(),
+            userLoginEntity: UserSharedPreferences.getUserPreference(),
           )),
         if (isRegisteredSelected)
           MaterialPage(
@@ -88,7 +87,7 @@ class MyRouterDelegate extends RouterDelegate
           MaterialPage(
               child: DetailPage(
             storyId: selectedStory ?? "",
-            token: UserSharedPreferences.getUserPrefs().token,
+            token: UserSharedPreferences.getUserPreference().token,
           )),
       ],
       onPopPage: (route, result) {

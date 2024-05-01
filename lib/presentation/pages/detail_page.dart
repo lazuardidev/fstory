@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/presentation/widgets/loading.dart';
+import 'package:fstory/presentation/widgets/response_message.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../providers/story_notifier.dart';
@@ -108,17 +109,15 @@ class _DetailPageState extends State<DetailPage> {
                 );
               } else if (provider.getStoryDetailState ==
                   GetStoryDetailState.noData) {
-                return const Text(
-                  "No data found...",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.deepOrangeAccent),
+                return const ResponseMessage(
+                  image: 'assets/images/no-data.png',
+                  message: 'No Data',
                 );
               } else if (provider.getStoryDetailState ==
                   GetStoryDetailState.error) {
-                return Text(
-                  "Error...\n${provider.errorMsg}",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.deepOrangeAccent),
+                return ResponseMessage(
+                  image: 'assets/images/error.png',
+                  message: "Error...\n${provider.errorMsg}",
                 );
               } else {
                 return const Loading();
