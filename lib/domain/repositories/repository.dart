@@ -1,8 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:fstory/domain/entity/login_entity.dart';
-import 'package:fstory/domain/entity/story_detail_entity.dart';
-import 'package:fstory/domain/entity/story_entity.dart';
-
+import 'package:fstory/domain/entities/login_entity.dart';
+import 'package:fstory/domain/entities/story_detail_entity.dart';
+import 'package:fstory/domain/entities/story_entity.dart';
 import '../../common/failure.dart';
 
 abstract class Repository {

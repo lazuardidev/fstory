@@ -4,7 +4,7 @@ import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
 import 'package:fstory/presentation/widget/card_story.dart';
 import 'package:fstory/presentation/widget/loading.dart';
 import 'package:provider/provider.dart';
-import '../../domain/entity/login_entity.dart';
+import '../../domain/entities/login_entity.dart';
 import '../provider/story_provider.dart';
 
 class FeedsPage extends StatefulWidget {

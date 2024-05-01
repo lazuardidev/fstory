@@ -4,7 +4,7 @@ import 'package:fstory/data/datasources/data_source.dart';
 import 'package:fstory/data/repository/repository_impl.dart';
 import 'package:fstory/presentation/provider/auth_provider.dart';
 import 'package:fstory/presentation/provider/story_provider.dart';
-import '../../domain/repository/repository.dart';
+import '../../domain/repositories/repository.dart';
 
 final locator = GetIt.instance;
 Future init() async {

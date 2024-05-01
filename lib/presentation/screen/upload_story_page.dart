@@ -5,7 +5,7 @@ import 'package:fstory/common/styles.dart';
 import 'package:fstory/presentation/widget/btn_primary.dart';
 import 'package:fstory/presentation/widget/loading.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:fstory/domain/entity/login_entity.dart';
+import 'package:fstory/domain/entities/login_entity.dart';
 import 'package:fstory/presentation/provider/story_provider.dart';
 import 'package:provider/provider.dart';
 

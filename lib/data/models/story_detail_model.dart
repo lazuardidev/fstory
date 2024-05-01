@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fstory/domain/entity/story_detail_entity.dart';
+import 'package:fstory/domain/entities/story_detail_entity.dart';
 
 class StoryDetailModel {
   String id;

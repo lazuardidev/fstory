@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
-import 'package:fstory/domain/repository/repository.dart';
+import 'package:fstory/domain/repositories/repository.dart';
 
-import '../../domain/entity/login_entity.dart';
+import '../../domain/entities/login_entity.dart';
 
 class AuthProvider extends ChangeNotifier {
   LoginEntity? _loginEntity;

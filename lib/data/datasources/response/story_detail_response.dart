@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fstory/data/model/story_detail_model.dart';
+import 'package:fstory/data/models/story_detail_model.dart';
 
 class StoryDetailResponse {
   bool error;

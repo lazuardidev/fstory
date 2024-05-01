@@ -1,5 +1,5 @@
 import 'package:fstory/common/constants.dart';
-import 'package:fstory/domain/entity/login_entity.dart';
+import 'package:fstory/domain/entities/login_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSharedPreferences {

@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
-import 'package:fstory/domain/entity/story_detail_entity.dart';
-import 'package:fstory/domain/repository/repository.dart';
+import 'package:fstory/domain/entities/story_detail_entity.dart';
+import 'package:fstory/domain/repositories/repository.dart';
 
-import '../../domain/entity/story_entity.dart';
+import '../../domain/entities/story_entity.dart';
 
 enum ListStoryState { init, loading, noData, hasData, error }
 

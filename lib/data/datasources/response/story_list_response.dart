@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../../model/story_model.dart';
+import '../../models/story_model.dart';
 
 class StoryListResponse {
   bool error;
@@ -17,22 +17,17 @@ class StoryListResponse {
 
   String toRawJson() => json.encode(toJson());
 
-  factory StoryListResponse.fromJson(Map<String, dynamic> json) => StoryListResponse(
-    error: json["error"],
-    message: json["message"],
-    listStory: List<StoryModel>.from(json["listStory"]
-        .map(
-            (x) =>
-                StoryModel.fromJson(x)
-        )
-    ),
-  );
+  factory StoryListResponse.fromJson(Map<String, dynamic> json) =>
+      StoryListResponse(
+        error: json["error"],
+        message: json["message"],
+        listStory: List<StoryModel>.from(
+            json["listStory"].map((x) => StoryModel.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "error": error,
-    "message": message,
-    "listStory": List<dynamic>.from(
-        listStory.map((x) => x.toJson())
-    ),
-  };
+        "error": error,
+        "message": message,
+        "listStory": List<dynamic>.from(listStory.map((x) => x.toJson())),
+      };
 }

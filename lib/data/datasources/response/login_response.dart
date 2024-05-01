@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fstory/data/model/login_model.dart';
+import 'package:fstory/data/models/login_model.dart';
 
 class LoginResponse {
   bool error;
