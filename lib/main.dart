@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/core/routes/router_delegate.dart';
-import 'package:fstory/presentation/provider/auth_provider.dart';
-import 'package:fstory/presentation/provider/story_provider.dart';
+import 'package:fstory/presentation/providers/auth_notifier.dart';
+import 'package:fstory/presentation/providers/story_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:fstory/core/di/injection.dart' as di;
 import 'core/di/injection.dart';
@@ -35,10 +35,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<StoryProvider>(
-            create: (ctx) => StoryProvider(repository: locator())),
-        ChangeNotifierProvider<AuthProvider>(
-            create: (ctx) => AuthProvider(repository: locator()))
+        ChangeNotifierProvider<StoryNotifier>(
+            create: (ctx) => StoryNotifier(repository: locator())),
+        ChangeNotifierProvider<AuthNotifier>(
+            create: (ctx) => AuthNotifier(repository: locator()))
       ],
       child: MaterialApp(
           title: 'FStory',

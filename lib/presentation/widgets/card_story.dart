@@ -1,6 +1,6 @@
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
-import 'package:fstory/presentation/widget/loading.dart';
+import 'package:fstory/presentation/widgets/loading.dart';
 
 class CardStory extends StatelessWidget {
   final String photoUrl;

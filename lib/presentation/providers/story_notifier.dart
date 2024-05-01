@@ -1,20 +1,16 @@
 import 'dart:typed_data';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:fstory/domain/entities/story_detail_entity.dart';
 import 'package:fstory/domain/repositories/repository.dart';
-
 import '../../domain/entities/story_entity.dart';
 
 enum ListStoryState { init, loading, noData, hasData, error }
-
 enum StoryDetailState { init, loading, noData, hasData, error }
-
 enum UploadStoryState { init, loading, hasData, error }
 
-class StoryProvider extends ChangeNotifier {
+class StoryNotifier extends ChangeNotifier {
   String? imagePath;
   XFile? imageFile;
   List<CameraDescription>? _listCameraDescription;
@@ -36,7 +32,7 @@ class StoryProvider extends ChangeNotifier {
   List<CameraDescription>? get listCameraDescription => _listCameraDescription;
   final Repository repository;
 
-  StoryProvider({required this.repository});
+  StoryNotifier({required this.repository});
 
   void setListCameraDescription(List<CameraDescription> cameras) {
     _listCameraDescription = cameras;

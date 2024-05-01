@@ -1,34 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/common/styles.dart';
-import 'package:fstory/presentation/provider/auth_provider.dart';
-import 'package:fstory/presentation/widget/btn_primary.dart';
-import 'package:fstory/presentation/widget/loading.dart';
+import 'package:fstory/presentation/widgets/btn_primary.dart';
+import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth_notifier.dart';
 
-class RegisterPage extends StatefulWidget {
-  final Function() isSuccessfulyRegistered;
+class AuthPage extends StatefulWidget {
+  final Function() isLoggedIn;
+  final Function() isRegisterClicked;
 
-  const RegisterPage({
-    super.key,
-    required this.isSuccessfulyRegistered,
-  });
+  const AuthPage(
+      {super.key, required this.isLoggedIn, required this.isRegisterClicked});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<AuthPage> createState() => _AuthPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  String? _email = "";
-  String? _password = "";
-  String? _name = "";
+class _AuthPageState extends State<AuthPage> {
+  String _email = "";
+  String _password = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
-      child: ListView(
-        children: [
+      body: Center(
+          child: Padding(
+        padding: const EdgeInsets.only(left: 32, right: 32, top: 128),
+        child: ListView(children: [
           Center(
             child: Image.asset(
               'assets/logo/logo.png',
@@ -38,35 +36,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           const SizedBox(height: 32),
           Text(
-            "Name",
-            textAlign: TextAlign.start,
-            style: Theme.of(context).textTheme.bodyLarge!,
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
-              hintText: 'Enter your name...',
-              hintStyle: Theme.of(context).textTheme.bodyLarge,
-              filled: true,
-              fillColor: Colors.white,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(color: primaryGray, width: 1),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(color: primaryColor, width: 1),
-              ),
-            ),
-            onChanged: (inputName) {
-              setState(() {
-                _name = inputName;
-              });
-            },
-          ),
-          const SizedBox(height: 16),
-          Text(
             "Email",
             textAlign: TextAlign.start,
             style: Theme.of(context).textTheme.bodyLarge!,
@@ -75,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
           TextField(
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
-              hintText: 'Enter your valid email...',
+              hintText: 'Enter your email...',
               hintStyle: Theme.of(context).textTheme.bodyLarge,
               filled: true,
               fillColor: Colors.white,
@@ -104,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
           TextField(
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
-              hintText: 'Enter password with minimum 8 char...',
+              hintText: 'Enter your password...',
               hintStyle: Theme.of(context).textTheme.bodyLarge,
               filled: true,
               fillColor: Colors.white,
@@ -125,12 +94,12 @@ class _RegisterPageState extends State<RegisterPage> {
             obscureText: true,
           ),
           const SizedBox(height: 48),
-          context.watch<AuthProvider>().registerLoading
+          context.watch<AuthNotifier>().loginLoading
               ? const Loading()
               : BtnPrimary(
-                  title: 'Register',
+                  title: 'Login',
                   onClick: () {
-                    _registerNewAccount();
+                    _loginUser();
                   },
                 ),
           const SizedBox(height: 16),
@@ -139,17 +108,17 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Already have account?",
+                "Doesn't have account?",
                 style: Theme.of(context).textTheme.bodyLarge!,
               ),
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    widget.isSuccessfulyRegistered();
+                    widget.isRegisterClicked();
                   });
                 },
                 child: Text(
-                  " Login Now",
+                  " Register Now",
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -158,50 +127,48 @@ class _RegisterPageState extends State<RegisterPage> {
               )
             ],
           )
-        ],
-      ),
-    ));
+        ]),
+      )),
+    );
   }
 
-  void _registerNewAccount() async {
+  void _loginUser() async {
     final ScaffoldMessengerState scaffoldMessengerState =
         ScaffoldMessenger.of(context);
-    final authProvider = context.read<AuthProvider>();
-
-    if (_name == "" || _email == "") {
+    final authNotifier = context.read<AuthNotifier>();
+    if (_email == "" || _password == "") {
       scaffoldMessengerState.showSnackBar(
-        const SnackBar(content: Text("Please fill the form correctly!")),
+        const SnackBar(content: Text("Please insert email and password!")),
       );
       return;
     }
     if (!RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(_email!)) {
+        .hasMatch(_email)) {
       scaffoldMessengerState.showSnackBar(
         const SnackBar(content: Text("Please enter valid email address!")),
       );
       return;
     }
-    if (_password!.length < 8) {
+    if (_password.length < 8) {
       scaffoldMessengerState.showSnackBar(
         const SnackBar(
             content: Text("Password must contain minimal 8 character")),
       );
       return;
     }
-    await authProvider.register(_name!, _email!, _password!);
+    await authNotifier.login(_email, _password);
 
-    Provider.of<AuthProvider>(context, listen: false).errorMsg == null
+    Provider.of<AuthNotifier>(context, listen: false).errorMsg == null
         ? {
             scaffoldMessengerState.showSnackBar(
               SnackBar(
-                  content:
-                      Text(authProvider.responseMsg ?? "Register Success")),
+                  content: Text("Welcome ${authNotifier.loginEntity?.name}!")),
             ),
-            widget.isSuccessfulyRegistered()
+            widget.isLoggedIn()
           }
         : scaffoldMessengerState.showSnackBar(
-            SnackBar(content: Text(authProvider.errorMsg ?? "Register Failed")),
+            SnackBar(content: Text(authNotifier.errorMsg ?? "Login Failed")),
           );
   }
 }

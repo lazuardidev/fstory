@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
 import 'package:fstory/domain/repositories/repository.dart';
-
 import '../../domain/entities/login_entity.dart';
 
-class AuthProvider extends ChangeNotifier {
+class AuthNotifier extends ChangeNotifier {
   LoginEntity? _loginEntity;
   String? _responseMsg;
   String? _errorMsg;
@@ -19,7 +18,7 @@ class AuthProvider extends ChangeNotifier {
 
   final Repository repository;
 
-  AuthProvider({required this.repository});
+  AuthNotifier({required this.repository});
 
   Future login(String email, String pass) async {
     _loginLoading = true;

@@ -1,32 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/common/styles.dart';
-import 'package:fstory/presentation/widget/btn_primary.dart';
-import 'package:fstory/presentation/widget/loading.dart';
+import 'package:fstory/presentation/providers/auth_notifier.dart';
+import 'package:fstory/presentation/widgets/btn_primary.dart';
+import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:provider/provider.dart';
-import '../provider/auth_provider.dart';
 
-class AuthPage extends StatefulWidget {
-  final Function() isLoggedIn;
-  final Function() isRegisterClicked;
+class RegisterPage extends StatefulWidget {
+  final Function() isSuccessfulyRegistered;
 
-  const AuthPage(
-      {super.key, required this.isLoggedIn, required this.isRegisterClicked});
+  const RegisterPage({
+    super.key,
+    required this.isSuccessfulyRegistered,
+  });
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
-  String _email = "";
-  String _password = "";
+class _RegisterPageState extends State<RegisterPage> {
+  String? _email = "";
+  String? _password = "";
+  String? _name = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: Padding(
-        padding: const EdgeInsets.only(left: 32, right: 32, top: 128),
-        child: ListView(children: [
+        body: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+      child: ListView(
+        children: [
           Center(
             child: Image.asset(
               'assets/logo/logo.png',
@@ -36,6 +38,35 @@ class _AuthPageState extends State<AuthPage> {
           ),
           const SizedBox(height: 32),
           Text(
+            "Name",
+            textAlign: TextAlign.start,
+            style: Theme.of(context).textTheme.bodyLarge!,
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
+              hintText: 'Enter your name...',
+              hintStyle: Theme.of(context).textTheme.bodyLarge,
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: primaryGray, width: 1),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: primaryColor, width: 1),
+              ),
+            ),
+            onChanged: (inputName) {
+              setState(() {
+                _name = inputName;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          Text(
             "Email",
             textAlign: TextAlign.start,
             style: Theme.of(context).textTheme.bodyLarge!,
@@ -44,7 +75,7 @@ class _AuthPageState extends State<AuthPage> {
           TextField(
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
-              hintText: 'Enter your email...',
+              hintText: 'Enter your valid email...',
               hintStyle: Theme.of(context).textTheme.bodyLarge,
               filled: true,
               fillColor: Colors.white,
@@ -73,7 +104,7 @@ class _AuthPageState extends State<AuthPage> {
           TextField(
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.fromLTRB(26, 14, 4, 14),
-              hintText: 'Enter your password...',
+              hintText: 'Enter password with minimum 8 char...',
               hintStyle: Theme.of(context).textTheme.bodyLarge,
               filled: true,
               fillColor: Colors.white,
@@ -94,12 +125,12 @@ class _AuthPageState extends State<AuthPage> {
             obscureText: true,
           ),
           const SizedBox(height: 48),
-          context.watch<AuthProvider>().loginLoading
+          context.watch<AuthNotifier>().registerLoading
               ? const Loading()
               : BtnPrimary(
-                  title: 'Login',
+                  title: 'Register',
                   onClick: () {
-                    _loginUser();
+                    _registerNewAccount();
                   },
                 ),
           const SizedBox(height: 16),
@@ -108,17 +139,17 @@ class _AuthPageState extends State<AuthPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Doesn't have account?",
+                "Already have account?",
                 style: Theme.of(context).textTheme.bodyLarge!,
               ),
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    widget.isRegisterClicked();
+                    widget.isSuccessfulyRegistered();
                   });
                 },
                 child: Text(
-                  " Register Now",
+                  " Login Now",
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -127,48 +158,50 @@ class _AuthPageState extends State<AuthPage> {
               )
             ],
           )
-        ]),
-      )),
-    );
+        ],
+      ),
+    ));
   }
 
-  void _loginUser() async {
+  void _registerNewAccount() async {
     final ScaffoldMessengerState scaffoldMessengerState =
         ScaffoldMessenger.of(context);
-    final authProvider = context.read<AuthProvider>();
-    if (_email == "" || _password == "") {
+    final authNotifier = context.read<AuthNotifier>();
+
+    if (_name == "" || _email == "") {
       scaffoldMessengerState.showSnackBar(
-        const SnackBar(content: Text("Please insert email and password!")),
+        const SnackBar(content: Text("Please fill the form correctly!")),
       );
       return;
     }
     if (!RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(_email)) {
+        .hasMatch(_email!)) {
       scaffoldMessengerState.showSnackBar(
         const SnackBar(content: Text("Please enter valid email address!")),
       );
       return;
     }
-    if (_password.length < 8) {
+    if (_password!.length < 8) {
       scaffoldMessengerState.showSnackBar(
         const SnackBar(
             content: Text("Password must contain minimal 8 character")),
       );
       return;
     }
-    await authProvider.login(_email, _password);
+    await authNotifier.register(_name!, _email!, _password!);
 
-    Provider.of<AuthProvider>(context, listen: false).errorMsg == null
+    Provider.of<AuthNotifier>(context, listen: false).errorMsg == null
         ? {
             scaffoldMessengerState.showSnackBar(
               SnackBar(
-                  content: Text("Welcome ${authProvider.loginEntity?.name}!")),
+                  content:
+                      Text(authNotifier.responseMsg ?? "Register Success")),
             ),
-            widget.isLoggedIn()
+            widget.isSuccessfulyRegistered()
           }
         : scaffoldMessengerState.showSnackBar(
-            SnackBar(content: Text(authProvider.errorMsg ?? "Login Failed")),
+            SnackBar(content: Text(authNotifier.errorMsg ?? "Register Failed")),
           );
   }
 }

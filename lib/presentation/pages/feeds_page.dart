@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/common/styles.dart';
 import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
-import 'package:fstory/presentation/widget/card_story.dart';
-import 'package:fstory/presentation/widget/loading.dart';
+import 'package:fstory/presentation/widgets/card_story.dart';
+import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/login_entity.dart';
-import '../provider/story_provider.dart';
+import '../providers/story_notifier.dart';
 
 class FeedsPage extends StatefulWidget {
   final Function(String) onSelectedStory;
@@ -73,7 +73,7 @@ class _FeedsPageState extends State<FeedsPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: Consumer<StoryProvider>(
+      body: Consumer<StoryNotifier>(
         builder: (ctx, provider, _) {
           if (provider.listStoryState == ListStoryState.loading) {
             return const Loading();
@@ -127,7 +127,7 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   Future _fetchListStory() async {
-    final storyProvider = context.read<StoryProvider>();
-    await storyProvider.getListStory(widget.userLoginEntity.token);
+    final storyNotifier = context.read<StoryNotifier>();
+    await storyNotifier.getListStory(widget.userLoginEntity.token);
   }
 }

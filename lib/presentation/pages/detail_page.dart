@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fstory/presentation/widget/loading.dart';
+import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import '../provider/story_provider.dart';
+import '../providers/story_notifier.dart';
 
 class DetailPage extends StatefulWidget {
   final String storyId;
@@ -20,7 +20,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
         appBar: AppBar(title: const Text("Detail Page")),
         body: Center(
-          child: Consumer<StoryProvider>(
+          child: Consumer<StoryNotifier>(
             builder: (ctx, provider, _) {
               if (provider.storyDetailState == StoryDetailState.loading) {
                 return const Loading();
@@ -78,7 +78,8 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                           Text(
                             timeago.format(
-                                provider.storyDetailEntity?.createdAt ?? DateTime.now(),
+                                provider.storyDetailEntity?.createdAt ??
+                                    DateTime.now(),
                                 locale: 'en'),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,

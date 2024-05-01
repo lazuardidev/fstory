@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
-import 'package:fstory/presentation/screen/register_page.dart';
-import 'package:fstory/presentation/screen/upload_story_page.dart';
+import 'package:fstory/presentation/pages/register_page.dart';
+import 'package:fstory/presentation/pages/upload_story_page.dart';
 import 'package:provider/provider.dart';
-import '../../presentation/provider/story_provider.dart';
-import '../../presentation/screen/auth_page.dart';
-import '../../presentation/screen/detail_page.dart';
-import '../../presentation/screen/feeds_page.dart';
+import '../../presentation/providers/story_notifier.dart';
+import '../../presentation/pages/auth_page.dart';
+import '../../presentation/pages/detail_page.dart';
+import '../../presentation/pages/feeds_page.dart';
 
 class MyRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -48,14 +48,14 @@ class MyRouterDelegate extends RouterDelegate
             child: FeedsPage(
               onSelectedStory: (storyId) {
                 selectedStory = storyId;
-                final storyProvider = context.read<StoryProvider>();
+                final storyNotifier = context.read<StoryNotifier>();
                 final token = UserSharedPreferences.getUserPrefs().token;
-                storyProvider.getStoryDetail(token, storyId);
+                storyNotifier.getStoryDetail(token, storyId);
                 notifyListeners();
               },
               isUploadStorySelected: () {
                 isUploadStorySelected = true;
-                context.read<StoryProvider>().setPostStoryInitState();
+                context.read<StoryNotifier>().setPostStoryInitState();
                 notifyListeners();
               },
               userLoginEntity: UserSharedPreferences.getUserPrefs(),
@@ -71,7 +71,7 @@ class MyRouterDelegate extends RouterDelegate
             isBackToFeedsPage: () {
               isUploadStorySelected = false;
               context
-                  .read<StoryProvider>()
+                  .read<StoryNotifier>()
                   .getListStory(UserSharedPreferences.getUserPrefs().token);
               notifyListeners();
             },

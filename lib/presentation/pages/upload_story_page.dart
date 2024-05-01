@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fstory/common/styles.dart';
-import 'package:fstory/presentation/widget/btn_primary.dart';
-import 'package:fstory/presentation/widget/loading.dart';
+import 'package:fstory/presentation/widgets/btn_primary.dart';
+import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fstory/domain/entities/login_entity.dart';
-import 'package:fstory/presentation/provider/story_provider.dart';
+import 'package:fstory/presentation/providers/story_notifier.dart';
 import 'package:provider/provider.dart';
 
 class UploadStoryPage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           children: [
             SizedBox(
-              child: context.watch<StoryProvider>().imagePath == null
+              child: context.watch<StoryNotifier>().imagePath == null
                   ? const Align(
                       alignment: Alignment.center,
                       child: Icon(
@@ -92,7 +92,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
             const SizedBox(
               height: 40,
             ),
-            Consumer<StoryProvider>(
+            Consumer<StoryNotifier>(
               builder: (ctx, provider, _) {
                 if (provider.uploadStoryState == UploadStoryState.loading) {
                   return const Center(
@@ -135,7 +135,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
     );
   }
 
-  _onUpload(StoryProvider provider) async {
+  _onUpload(StoryNotifier provider) async {
     final imagePath = provider.imagePath;
     final imageFile = provider.imageFile;
     if (imagePath == null || imageFile == null || _desc == null) {
@@ -170,7 +170,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
   _onGalleryView() async {
     final ImagePicker picker = ImagePicker();
-    final provider = context.read<StoryProvider>();
+    final provider = context.read<StoryNotifier>();
 
     final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
     final isLinux = defaultTargetPlatform == TargetPlatform.linux;
@@ -188,7 +188,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
 
   _onCameraView() async {
     final ImagePicker picker = ImagePicker();
-    final provider = context.read<StoryProvider>();
+    final provider = context.read<StoryNotifier>();
 
     final isAndroid = defaultTargetPlatform == TargetPlatform.android;
     final isiOS = defaultTargetPlatform == TargetPlatform.iOS;
@@ -206,7 +206,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
   }
 
   Widget _showImage() {
-    final imagePath = context.read<StoryProvider>().imagePath;
+    final imagePath = context.read<StoryNotifier>().imagePath;
     return kIsWeb
         ? Image.network(
             imagePath.toString(),
