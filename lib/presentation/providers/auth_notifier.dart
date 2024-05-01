@@ -29,9 +29,11 @@ class AuthNotifier extends ChangeNotifier {
 
     final loginEntityFold = await repository.login(email, pass);
     loginEntityFold.fold(
-        (l) => _errorMsg = l.msg,
-        (r) => _loginEntity =
-            LoginEntity(userId: r.userId, name: r.name, token: r.token));
+        (error) => _errorMsg = error.msg,
+        (response) => _loginEntity = LoginEntity(
+            userId: response.userId,
+            name: response.name,
+            token: response.token));
     if (loginEntity != null) {
       UserSharedPreferences.loginPrefs(loginEntity!);
     }
@@ -47,7 +49,8 @@ class AuthNotifier extends ChangeNotifier {
     _errorMsg = null;
 
     final registerEntityFold = await repository.register(name, email, pass);
-    registerEntityFold.fold((l) => _errorMsg = l.msg, (r) => _responseMsg = r);
+    registerEntityFold.fold((error) => _errorMsg = error.msg,
+        (response) => _responseMsg = response);
     _registerLoading = false;
     notifyListeners();
   }

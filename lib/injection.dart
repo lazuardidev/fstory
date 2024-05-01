@@ -8,18 +8,14 @@ import 'domain/repositories/repository.dart';
 
 final locator = GetIt.instance;
 Future init() async {
-  // provider
   locator.registerLazySingleton(() => AuthNotifier(repository: locator()));
   locator.registerLazySingleton(() => StoryNotifier(repository: locator()));
 
-  // repository
-  locator.registerLazySingleton<Repository>(
-      () => RepositoryImpl(dataSource: locator()));
-
-  // remote data source
   locator
       .registerLazySingleton<DataSource>(() => DataSourceImpl(dio: locator()));
 
-  // external
+  locator.registerLazySingleton<Repository>(
+      () => RepositoryImpl(dataSource: locator()));
+
   locator.registerLazySingleton(() => Dio());
 }

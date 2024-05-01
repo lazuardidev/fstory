@@ -22,10 +22,10 @@ class _DetailPageState extends State<DetailPage> {
         body: Center(
           child: Consumer<StoryNotifier>(
             builder: (ctx, provider, _) {
-              if (provider.storyDetailState == StoryDetailState.loading) {
+              if (provider.getStoryDetailState == GetStoryDetailState.loading) {
                 return const Loading();
-              } else if (provider.storyDetailState ==
-                  StoryDetailState.hasData) {
+              } else if (provider.getStoryDetailState ==
+                  GetStoryDetailState.hasData) {
                 return Padding(
                   padding: const EdgeInsets.all(12),
                   child: Column(
@@ -106,13 +106,15 @@ class _DetailPageState extends State<DetailPage> {
                     ],
                   ),
                 );
-              } else if (provider.storyDetailState == StoryDetailState.noData) {
+              } else if (provider.getStoryDetailState ==
+                  GetStoryDetailState.noData) {
                 return const Text(
                   "No data found...",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.deepOrangeAccent),
                 );
-              } else if (provider.storyDetailState == StoryDetailState.error) {
+              } else if (provider.getStoryDetailState ==
+                  GetStoryDetailState.error) {
                 return Text(
                   "Error...\n${provider.errorMsg}",
                   textAlign: TextAlign.center,

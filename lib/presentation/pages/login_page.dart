@@ -5,18 +5,18 @@ import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_notifier.dart';
 
-class AuthPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   final Function() isLoggedIn;
   final Function() isRegisterClicked;
 
-  const AuthPage(
+  const LoginPage(
       {super.key, required this.isLoggedIn, required this.isRegisterClicked});
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _LoginPageState extends State<LoginPage> {
   String _email = "";
   String _password = "";
 
@@ -159,6 +159,7 @@ class _AuthPageState extends State<AuthPage> {
     }
     await authNotifier.login(_email, _password);
 
+    // ignore: use_build_context_synchronously
     Provider.of<AuthNotifier>(context, listen: false).errorMsg == null
         ? {
             scaffoldMessengerState.showSnackBar(

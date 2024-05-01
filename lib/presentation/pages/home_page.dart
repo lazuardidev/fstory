@@ -7,24 +7,24 @@ import 'package:provider/provider.dart';
 import '../../domain/entities/login_entity.dart';
 import '../providers/story_notifier.dart';
 
-class FeedsPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   final Function(String) onSelectedStory;
-  final Function() isUploadStorySelected;
+  final Function() isUploadSelected;
   final Function() loggingOut;
   final LoginEntity userLoginEntity;
 
-  const FeedsPage(
+  const HomePage(
       {super.key,
       required this.onSelectedStory,
-      required this.isUploadStorySelected,
+      required this.isUploadSelected,
       required this.userLoginEntity,
       required this.loggingOut});
 
   @override
-  State<FeedsPage> createState() => _FeedsPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _FeedsPageState extends State<FeedsPage> {
+class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
@@ -61,7 +61,7 @@ class _FeedsPageState extends State<FeedsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          widget.isUploadStorySelected();
+          widget.isUploadSelected();
         },
         backgroundColor: primaryColor,
         shape: RoundedRectangleBorder(
@@ -75,9 +75,9 @@ class _FeedsPageState extends State<FeedsPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Consumer<StoryNotifier>(
         builder: (ctx, provider, _) {
-          if (provider.listStoryState == ListStoryState.loading) {
+          if (provider.getStoriesState == GetStoriesState.loading) {
             return const Loading();
-          } else if (provider.listStoryState == ListStoryState.hasData) {
+          } else if (provider.getStoriesState == GetStoriesState.hasData) {
             return RefreshIndicator(
               onRefresh: () async {
                 _fetchListStory();
@@ -102,7 +102,7 @@ class _FeedsPageState extends State<FeedsPage> {
                 ),
               ),
             );
-          } else if (provider.listStoryState == ListStoryState.noData) {
+          } else if (provider.getStoriesState == GetStoriesState.noData) {
             return const Center(
               child: Text(
                 "There are no data to be displayed...",
@@ -110,7 +110,7 @@ class _FeedsPageState extends State<FeedsPage> {
                 style: TextStyle(color: Colors.deepOrangeAccent),
               ),
             );
-          } else if (provider.listStoryState == ListStoryState.error) {
+          } else if (provider.getStoriesState == GetStoriesState.error) {
             return Center(
               child: Text(
                 provider.errorMsg ?? "Error...",

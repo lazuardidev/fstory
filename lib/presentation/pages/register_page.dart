@@ -191,6 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     await authNotifier.register(_name!, _email!, _password!);
 
+    // ignore: use_build_context_synchronously
     Provider.of<AuthNotifier>(context, listen: false).errorMsg == null
         ? {
             scaffoldMessengerState.showSnackBar(

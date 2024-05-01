@@ -6,40 +6,36 @@ import 'package:fstory/domain/entities/story_detail_entity.dart';
 import 'package:fstory/domain/repositories/repository.dart';
 import '../../domain/entities/story_entity.dart';
 
-enum ListStoryState { init, loading, noData, hasData, error }
-enum StoryDetailState { init, loading, noData, hasData, error }
-enum UploadStoryState { init, loading, hasData, error }
+enum GetStoriesState { init, loading, noData, hasData, error }
+
+enum GetStoryDetailState { init, loading, noData, hasData, error }
+
+enum PostStoryState { init, loading, hasData, error }
 
 class StoryNotifier extends ChangeNotifier {
   String? imagePath;
   XFile? imageFile;
-  List<CameraDescription>? _listCameraDescription;
   List<StoryEntity>? _listStoryEntity;
   StoryDetailEntity? _storyDetailEntity;
   String? _postResponse;
   String? _errorMsg;
-  UploadStoryState _uploadStoryState = UploadStoryState.init;
-  StoryDetailState _storyDetailState = StoryDetailState.init;
-  ListStoryState _listStoryState = ListStoryState.init;
+  PostStoryState _postStoryState = PostStoryState.init;
+  GetStoryDetailState _getStoryDetailState = GetStoryDetailState.init;
+  GetStoriesState _getStoriesState = GetStoriesState.init;
 
   List<StoryEntity>? get listStoryEntity => _listStoryEntity;
   StoryDetailEntity? get storyDetailEntity => _storyDetailEntity;
   String? get postResponse => _postResponse;
   String? get errorMsg => _errorMsg;
-  UploadStoryState get uploadStoryState => _uploadStoryState;
-  StoryDetailState get storyDetailState => _storyDetailState;
-  ListStoryState get listStoryState => _listStoryState;
-  List<CameraDescription>? get listCameraDescription => _listCameraDescription;
+  PostStoryState get postStoryState => _postStoryState;
+  GetStoryDetailState get getStoryDetailState => _getStoryDetailState;
+  GetStoriesState get getStoriesState => _getStoriesState;
   final Repository repository;
 
   StoryNotifier({required this.repository});
 
-  void setListCameraDescription(List<CameraDescription> cameras) {
-    _listCameraDescription = cameras;
-  }
-
   void setPostStoryInitState() {
-    _uploadStoryState = UploadStoryState.init;
+    _postStoryState = PostStoryState.init;
   }
 
   void setImagePath(String? value) {
@@ -53,22 +49,22 @@ class StoryNotifier extends ChangeNotifier {
   }
 
   Future getListStory(String token) async {
-    _listStoryState = ListStoryState.loading;
+    _getStoriesState = GetStoriesState.loading;
 
     _errorMsg = null;
     _listStoryEntity = null;
 
     final storyListEntityFold = await repository.getStoryList(token);
-    storyListEntityFold.fold((l) {
-      _errorMsg = l.msg;
-      _listStoryState = ListStoryState.error;
-    }, (r) {
-      if (r.isEmpty) {
-        _listStoryState = ListStoryState.noData;
-        _listStoryEntity = r;
+    storyListEntityFold.fold((error) {
+      _errorMsg = error.msg;
+      _getStoriesState = GetStoriesState.error;
+    }, (response) {
+      if (response.isEmpty) {
+        _getStoriesState = GetStoriesState.noData;
+        _listStoryEntity = response;
       } else {
-        _listStoryState = ListStoryState.hasData;
-        _listStoryEntity = r;
+        _getStoriesState = GetStoriesState.hasData;
+        _listStoryEntity = response;
       }
     });
 
@@ -80,16 +76,16 @@ class StoryNotifier extends ChangeNotifier {
     _storyDetailEntity = null;
 
     final storyDetailEntityFold = await repository.getStoryDetail(token, id);
-    storyDetailEntityFold.fold((l) {
-      _errorMsg = l.msg;
-      _storyDetailState = StoryDetailState.error;
-    }, (r) {
-      if (r.photoUrl.isEmpty) {
-        _storyDetailState = StoryDetailState.noData;
-        _storyDetailEntity = r;
+    storyDetailEntityFold.fold((error) {
+      _errorMsg = error.msg;
+      _getStoryDetailState = GetStoryDetailState.error;
+    }, (response) {
+      if (response.photoUrl.isEmpty) {
+        _getStoryDetailState = GetStoryDetailState.noData;
+        _storyDetailEntity = response;
       } else {
-        _storyDetailState = StoryDetailState.hasData;
-        _storyDetailEntity = r;
+        _getStoryDetailState = GetStoryDetailState.hasData;
+        _storyDetailEntity = response;
       }
     });
     notifyListeners();
@@ -97,7 +93,7 @@ class StoryNotifier extends ChangeNotifier {
 
   Future postStory(
       String token, String desc, List<int> bytes, String filename) async {
-    _uploadStoryState = UploadStoryState.loading;
+    _postStoryState = PostStoryState.loading;
     notifyListeners();
 
     _errorMsg = null;
@@ -106,12 +102,12 @@ class StoryNotifier extends ChangeNotifier {
     final Uint8List uint8List = Uint8List.fromList(bytes);
     final responseFold =
         await repository.postStory(token, desc, uint8List, filename);
-    responseFold.fold((l) {
-      _errorMsg = l.msg;
-      _uploadStoryState = UploadStoryState.error;
-    }, (r) {
-      _postResponse = r;
-      _uploadStoryState = UploadStoryState.hasData;
+    responseFold.fold((error) {
+      _errorMsg = error.msg;
+      _postStoryState = PostStoryState.error;
+    }, (response) {
+      _postResponse = response;
+      _postStoryState = PostStoryState.hasData;
     });
     notifyListeners();
   }

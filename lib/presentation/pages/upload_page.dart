@@ -9,19 +9,19 @@ import 'package:fstory/domain/entities/login_entity.dart';
 import 'package:fstory/presentation/providers/story_notifier.dart';
 import 'package:provider/provider.dart';
 
-class UploadStoryPage extends StatefulWidget {
-  final Function() isBackToFeedsPage;
+class UploadPage extends StatefulWidget {
+  final Function() isBackToHomePage;
   final LoginEntity userLoginEntity;
-  const UploadStoryPage(
+  const UploadPage(
       {super.key,
-      required this.isBackToFeedsPage,
+      required this.isBackToHomePage,
       required this.userLoginEntity});
 
   @override
-  State<UploadStoryPage> createState() => _UploadStoryPageState();
+  State<UploadPage> createState() => _UploadPageState();
 }
 
-class _UploadStoryPageState extends State<UploadStoryPage> {
+class _UploadPageState extends State<UploadPage> {
   String? _desc;
 
   @override
@@ -94,19 +94,18 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
             ),
             Consumer<StoryNotifier>(
               builder: (ctx, provider, _) {
-                if (provider.uploadStoryState == UploadStoryState.loading) {
+                if (provider.postStoryState == PostStoryState.loading) {
                   return const Center(
                     child: Loading(),
                   );
-                } else if (provider.uploadStoryState == UploadStoryState.init) {
+                } else if (provider.postStoryState == PostStoryState.init) {
                   return BtnPrimary(
                     title: 'Upload',
                     onClick: () {
                       _onUpload(provider);
                     },
                   );
-                } else if (provider.uploadStoryState ==
-                    UploadStoryState.error) {
+                } else if (provider.postStoryState == PostStoryState.error) {
                   _showSnackbar(provider.errorMsg);
                   return BtnPrimary(
                     title: 'Upload',
@@ -114,8 +113,7 @@ class _UploadStoryPageState extends State<UploadStoryPage> {
                       _onUpload(provider);
                     },
                   );
-                } else if (provider.uploadStoryState ==
-                    UploadStoryState.hasData) {
+                } else if (provider.postStoryState == PostStoryState.hasData) {
                   WidgetsBinding.instance.addPostFrameCallback(
                       (_) => _showSnackbar("Sukses upload story"));
                   return BtnPrimary(

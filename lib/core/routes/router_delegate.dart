@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/core/shared_preferences/user_shared_preferences.dart';
 import 'package:fstory/presentation/pages/register_page.dart';
-import 'package:fstory/presentation/pages/upload_story_page.dart';
+import 'package:fstory/presentation/pages/upload_page.dart';
 import 'package:provider/provider.dart';
 import '../../presentation/providers/story_notifier.dart';
-import '../../presentation/pages/auth_page.dart';
+import '../../presentation/pages/login_page.dart';
 import '../../presentation/pages/detail_page.dart';
-import '../../presentation/pages/feeds_page.dart';
+import '../../presentation/pages/home_page.dart';
 
 class MyRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -14,7 +14,7 @@ class MyRouterDelegate extends RouterDelegate
   String? selectedStory;
   bool isLoggedIn = false;
   bool isRegisteredSelected = false;
-  bool isUploadStorySelected = false;
+  bool isUploadSelected = false;
 
   MyRouterDelegate() : _navKey = GlobalKey<NavigatorState>() {
     _init();
@@ -32,7 +32,7 @@ class MyRouterDelegate extends RouterDelegate
       pages: [
         if (!isLoggedIn)
           MaterialPage(
-            child: AuthPage(
+            child: LoginPage(
               isLoggedIn: () {
                 isLoggedIn = true;
                 notifyListeners();
@@ -45,7 +45,7 @@ class MyRouterDelegate extends RouterDelegate
           ),
         if (isLoggedIn)
           MaterialPage(
-            child: FeedsPage(
+            child: HomePage(
               onSelectedStory: (storyId) {
                 selectedStory = storyId;
                 final storyNotifier = context.read<StoryNotifier>();
@@ -53,8 +53,8 @@ class MyRouterDelegate extends RouterDelegate
                 storyNotifier.getStoryDetail(token, storyId);
                 notifyListeners();
               },
-              isUploadStorySelected: () {
-                isUploadStorySelected = true;
+              isUploadSelected: () {
+                isUploadSelected = true;
                 context.read<StoryNotifier>().setPostStoryInitState();
                 notifyListeners();
               },
@@ -65,11 +65,11 @@ class MyRouterDelegate extends RouterDelegate
               },
             ),
           ),
-        if (isLoggedIn && isUploadStorySelected)
+        if (isLoggedIn && isUploadSelected)
           MaterialPage(
-              child: UploadStoryPage(
-            isBackToFeedsPage: () {
-              isUploadStorySelected = false;
+              child: UploadPage(
+            isBackToHomePage: () {
+              isUploadSelected = false;
               context
                   .read<StoryNotifier>()
                   .getListStory(UserSharedPreferences.getUserPrefs().token);
@@ -98,7 +98,7 @@ class MyRouterDelegate extends RouterDelegate
         }
         isRegisteredSelected = false;
         selectedStory = null;
-        isUploadStorySelected = false;
+        isUploadSelected = false;
         notifyListeners();
         return true;
       },
