@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/common/styles.dart';
 import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
+import 'package:fstory/presentation/widget/card_story.dart';
 import 'package:fstory/presentation/widget/loading.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entity/login_entity.dart';
 import '../provider/story_provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class FeedsPage extends StatefulWidget {
   final Function(String) onSelectedStory;
@@ -79,115 +79,29 @@ class _FeedsPageState extends State<FeedsPage> {
             return const Loading();
           } else if (provider.listStoryState == ListStoryState.hasData) {
             return RefreshIndicator(
-                onRefresh: () async {
-                  _fetchListStory();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ListView.builder(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: provider.listStoryEntity?.length ?? 0,
-                      itemBuilder: (ctx, idx) {
-                        return GestureDetector(
-                            onTap: () {
-                              widget.onSelectedStory(
-                                  provider.listStoryEntity![idx].id);
-                            },
-                            child: Card(
-                              elevation: 4,
-                              margin: const EdgeInsets.symmetric(vertical: 6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: SizedBox(
-                                        height: 120,
-                                        width: double.infinity,
-                                        child: Image.network(
-                                          provider
-                                              .listStoryEntity![idx].photoUrl,
-                                          fit: BoxFit.cover,
-                                          loadingBuilder:
-                                              (_, child, loadingProgress) {
-                                            if (loadingProgress == null) {
-                                              return child;
-                                            } else {
-                                              return const Loading();
-                                            }
-                                          },
-                                          errorBuilder: (_, __, ___) {
-                                            return Icon(
-                                              Icons.broken_image,
-                                              size: 100,
-                                              color: Colors.grey[400],
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          provider.listStoryEntity![idx].name,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .copyWith(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 18,
-                                              ),
-                                        ),
-                                        Text(
-                                          timeago.format(
-                                              provider.listStoryEntity![idx]
-                                                  .createdAt,
-                                              locale: 'en'),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .copyWith(
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                      provider
-                                          .listStoryEntity![idx].description,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.start,
-                                      maxLines: 3,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleSmall!
-                                          .copyWith(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ));
-                      }),
-                ));
+              onRefresh: () async {
+                _fetchListStory();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: provider.listStoryEntity?.length ?? 0,
+                  itemBuilder: (ctx, idx) {
+                    return CardStory(
+                      photoUrl: provider.listStoryEntity![idx].photoUrl,
+                      name: provider.listStoryEntity![idx].name,
+                      createdAt: provider.listStoryEntity![idx].createdAt,
+                      description: provider.listStoryEntity![idx].description,
+                      onTap: () {
+                        widget
+                            .onSelectedStory(provider.listStoryEntity![idx].id);
+                      },
+                    );
+                  },
+                ),
+              ),
+            );
           } else if (provider.listStoryState == ListStoryState.noData) {
             return const Center(
               child: Text(
