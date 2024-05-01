@@ -133,6 +133,10 @@ class _UploadPageState extends State<UploadPage> {
     );
   }
 
+  _onSuccess() {
+    widget.isBackToHomePage();
+  }
+
   _onUpload(StoryNotifier provider) async {
     final imagePath = provider.imagePath;
     final imageFile = provider.imageFile;
@@ -155,6 +159,7 @@ class _UploadPageState extends State<UploadPage> {
       _desc!,
       newBytes,
       fileName,
+      _onSuccess,
     );
   }
 

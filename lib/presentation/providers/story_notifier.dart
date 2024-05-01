@@ -91,8 +91,8 @@ class StoryNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future postStory(
-      String token, String desc, List<int> bytes, String filename) async {
+  Future postStory(String token, String desc, List<int> bytes, String filename,
+      Function() onSuccess) async {
     _postStoryState = PostStoryState.loading;
     notifyListeners();
 
@@ -108,6 +108,7 @@ class StoryNotifier extends ChangeNotifier {
     }, (response) {
       _postResponse = response;
       _postStoryState = PostStoryState.hasData;
+      onSuccess();
     });
     notifyListeners();
   }
