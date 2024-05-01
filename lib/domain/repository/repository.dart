@@ -3,7 +3,7 @@ import 'package:fstory/domain/entity/login_entity.dart';
 import 'package:fstory/domain/entity/story_detail_entity.dart';
 import 'package:fstory/domain/entity/story_entity.dart';
 
-import '../../core/exceptionfailure/failure.dart';
+import '../../common/failure.dart';
 
 abstract class Repository {
   Future<Either<Failure, List<StoryEntity>>> getStoryList(String token);

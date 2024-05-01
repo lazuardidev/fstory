@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:fstory/core/exceptionfailure/exception.dart';
+import 'package:fstory/common/exception.dart';
 import 'package:fstory/data/model/login_model.dart';
 import 'package:fstory/data/model/story_detail_model.dart';
 import 'package:fstory/data/model/story_model.dart';
@@ -30,7 +29,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   static const endpointRegister = "/register";
   static const endpointLogin = "/login";
   static const endpointAccountAddStory = "/stories";
-  // static const endpointGuestAddStory = "/stories/guest";
   static const endpointGetStories = "/stories?size=25";
   static const endpointGetDetail = "/stories/";
 
@@ -87,7 +85,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     try {
       final storyListResponse = await dio.get(baseUrl + endpointGetStories,
           options: Options(headers: {"Authorization": "Bearer $token"}));
-
       if (storyListResponse.statusCode == 200) {
         return StoryListResponse.fromJson(storyListResponse.data).listStory;
       } else {
@@ -134,7 +131,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         'photo': MultipartFile.fromBytes(bytes, filename: fileName),
         'description': desc
       });
-
       final postStoryResponse =
           await dio.post(baseUrl + endpointAccountAddStory,
               options: Options(headers: {

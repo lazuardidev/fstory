@@ -1,15 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:fstory/core/exceptionfailure/exception.dart';
-
-import 'package:fstory/core/exceptionfailure/failure.dart';
-import 'package:fstory/data/remotedatasource/remotedata_source.dart';
-
 import 'package:fstory/domain/entity/login_entity.dart';
-
 import 'package:fstory/domain/entity/story_detail_entity.dart';
-
 import 'package:fstory/domain/entity/story_entity.dart';
-
+import 'package:fstory/data/remotedatasource/remotedata_source.dart';
+import 'package:fstory/common/exception.dart';
+import 'package:fstory/common/failure.dart';
 import '../../domain/repository/repository.dart';
 
 class RepositoryImpl extends Repository {
