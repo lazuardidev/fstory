@@ -5,10 +5,10 @@ import 'package:fstory/common/exception.dart';
 import 'package:fstory/data/models/login_model.dart';
 import 'package:fstory/data/models/story_detail_model.dart';
 import 'package:fstory/data/models/story_model.dart';
-import 'package:fstory/data/datasources/response/login_response.dart';
-import 'package:fstory/data/datasources/response/server_response.dart';
-import 'package:fstory/data/datasources/response/story_detail_response.dart';
-import 'package:fstory/data/datasources/response/story_list_response.dart';
+import 'package:fstory/data/data_sources/response/login_response.dart';
+import 'package:fstory/data/data_sources/response/server_response.dart';
+import 'package:fstory/data/data_sources/response/story_detail_response.dart';
+import 'package:fstory/data/data_sources/response/story_list_response.dart';
 
 abstract class DataSource {
   Future<List<StoryModel>> getStoryList(String token);

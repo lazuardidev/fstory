@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:fstory/data/datasources/data_source.dart';
+import 'package:fstory/data/data_sources/data_source.dart';
 import 'package:fstory/data/repository/repository_impl.dart';
 import 'package:fstory/presentation/providers/auth_notifier.dart';
 import 'package:fstory/presentation/providers/story_notifier.dart';
-import '../../domain/repositories/repository.dart';
+import 'domain/repositories/repository.dart';
 
 final locator = GetIt.instance;
 Future init() async {

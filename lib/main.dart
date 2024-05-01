@@ -3,9 +3,9 @@ import 'package:fstory/core/routes/router_delegate.dart';
 import 'package:fstory/presentation/providers/auth_notifier.dart';
 import 'package:fstory/presentation/providers/story_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:fstory/core/di/injection.dart' as di;
-import 'core/di/injection.dart';
-import 'core/sharedpreferences/user_shared_preferences.dart';
+import 'package:fstory/injection.dart' as di;
+import 'injection.dart';
+import 'core/shared_preferences/user_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

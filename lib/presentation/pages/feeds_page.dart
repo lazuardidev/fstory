@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/common/styles.dart';
-import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
+import 'package:fstory/core/shared_preferences/user_shared_preferences.dart';
 import 'package:fstory/presentation/widgets/card_story.dart';
 import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:provider/provider.dart';

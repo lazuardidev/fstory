@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:fstory/domain/entities/login_entity.dart';
 import 'package:fstory/domain/entities/story_detail_entity.dart';
 import 'package:fstory/domain/entities/story_entity.dart';
-import 'package:fstory/data/datasources/data_source.dart';
+import 'package:fstory/data/data_sources/data_source.dart';
 import 'package:fstory/common/exception.dart';
 import 'package:fstory/common/failure.dart';
 import '../../domain/repositories/repository.dart';

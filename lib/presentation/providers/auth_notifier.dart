@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
+import 'package:fstory/core/shared_preferences/user_shared_preferences.dart';
 import 'package:fstory/domain/repositories/repository.dart';
 import '../../domain/entities/login_entity.dart';
 

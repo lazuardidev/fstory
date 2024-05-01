@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fstory/core/sharedpreferences/user_shared_preferences.dart';
+import 'package:fstory/core/shared_preferences/user_shared_preferences.dart';
 import 'package:fstory/presentation/pages/register_page.dart';
 import 'package:fstory/presentation/pages/upload_story_page.dart';
 import 'package:provider/provider.dart';
