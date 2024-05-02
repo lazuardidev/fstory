@@ -1,3 +1,7 @@
+import 'package:json_annotation/json_annotation.dart';
+part 'story_entity.g.dart';
+
+@JsonSerializable()
 class StoryEntity {
   String id;
   String name;
@@ -16,4 +20,9 @@ class StoryEntity {
     this.lat,
     this.lon,
   });
+
+  factory StoryEntity.fromJson(Map<String, dynamic> json) =>
+      _$StoryEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StoryEntityToJson(this);
 }
