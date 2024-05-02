@@ -68,10 +68,11 @@ class StoryNotifier extends ChangeNotifier {
       } else {
         if (response.length < sizeItems) {
           page = null;
+        } else {
+          page = page! + 1;
         }
         _getStoriesState = GetStoriesState.hasData;
         _listStoryEntity?.addAll(response);
-        page = page! + 1;
       }
     });
     notifyListeners();
