@@ -15,7 +15,7 @@ enum PostStoryState { init, loading, hasData, error }
 class StoryNotifier extends ChangeNotifier {
   String? imagePath;
   XFile? imageFile;
-  List<StoryEntity>? _listStoryEntity;
+  List<StoryEntity>? _listStoryEntity = [];
   StoryDetailEntity? _storyDetailEntity;
   String? _postResponse;
   String? _errorMsg;
@@ -31,6 +31,9 @@ class StoryNotifier extends ChangeNotifier {
   GetStoryDetailState get getStoryDetailState => _getStoryDetailState;
   GetStoriesState get getStoriesState => _getStoriesState;
   final Repository repository;
+
+  int? page = 1;
+  int sizeItems = 10;
 
   StoryNotifier({required this.repository});
 
@@ -49,25 +52,28 @@ class StoryNotifier extends ChangeNotifier {
   }
 
   Future getListStory(String token) async {
-    _getStoriesState = GetStoriesState.loading;
-
+    if (page == 1) {
+      _getStoriesState = GetStoriesState.loading;
+    }
     _errorMsg = null;
-    _listStoryEntity = null;
-
-    final storyListEntityFold = await repository.getStoryList(token);
+    final storyListEntityFold = await repository.getStoryList(
+        token, page.toString(), sizeItems.toString());
     storyListEntityFold.fold((error) {
       _errorMsg = error.msg;
       _getStoriesState = GetStoriesState.error;
     }, (response) {
       if (response.isEmpty) {
         _getStoriesState = GetStoriesState.noData;
-        _listStoryEntity = response;
+        page = null;
       } else {
+        if (response.length < sizeItems) {
+          page = null;
+        }
         _getStoriesState = GetStoriesState.hasData;
-        _listStoryEntity = response;
+        _listStoryEntity?.addAll(response);
+        page = page! + 1;
       }
     });
-
     notifyListeners();
   }
 
@@ -129,5 +135,12 @@ class StoryNotifier extends ChangeNotifier {
       length = newByte.length;
     } while (length > 1000000);
     return newByte;
+  }
+
+  Future<void> refreshListStory(String token) async {
+    _listStoryEntity = [];
+    page = 1;
+    _errorMsg = null;
+    await getListStory(token);
   }
 }

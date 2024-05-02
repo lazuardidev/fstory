@@ -11,7 +11,8 @@ import 'package:fstory/data/models/story_detail_response.dart';
 import 'package:fstory/data/models/story_list_response.dart';
 
 abstract class DataSource {
-  Future<List<StoryModel>> getStoryList(String token);
+  Future<List<StoryModel>> getStoryList(
+      String token, String page, String sizeItems);
   Future<StoryDetailModel> getStoryDetail(String id, String token);
   Future<LoginModel> login(String email, String pass);
   Future<String> register(String name, String email, String pass);
@@ -76,9 +77,11 @@ class DataSourceImpl implements DataSource {
   }
 
   @override
-  Future<List<StoryModel>> getStoryList(String token) async {
+  Future<List<StoryModel>> getStoryList(
+      String token, String page, String sizeItems) async {
     try {
-      final response = await dio.get("$baseUrl/stories?size=30",
+      final response = await dio.get(
+          "$baseUrl/stories?size=$sizeItems&page=$page",
           options: Options(headers: {"Authorization": "Bearer $token"}));
       if (response.statusCode == 200) {
         return StoryListResponse.fromJson(response.data).listStory;

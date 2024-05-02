@@ -26,10 +26,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    _fetchListStory();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent &&
+          context.read<StoryNotifier>().page != null) {
+        _fetchListStory();
+      }
+    });
+    Future.microtask(() async => _fetchListStory());
   }
 
   @override
@@ -76,19 +85,25 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Consumer<StoryNotifier>(
         builder: (ctx, provider, _) {
+          final currentStoriesLength = provider.listStoryEntity?.length ?? 0;
           if (provider.getStoriesState == GetStoriesState.loading) {
             return const Loading();
           } else if (provider.getStoriesState == GetStoriesState.hasData) {
             return RefreshIndicator(
               onRefresh: () async {
-                _fetchListStory();
+                _refreshListStory();
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ListView.builder(
+                  controller: scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: provider.listStoryEntity?.length ?? 0,
+                  itemCount:
+                      currentStoriesLength + (provider.page != null ? 1 : 0),
                   itemBuilder: (ctx, idx) {
+                    if (idx == currentStoriesLength && provider.page != null) {
+                      return const Loading();
+                    }
                     return CardStory(
                       photoUrl: provider.listStoryEntity![idx].photoUrl,
                       name: provider.listStoryEntity![idx].name,
@@ -125,5 +140,16 @@ class _HomePageState extends State<HomePage> {
   Future _fetchListStory() async {
     final storyNotifier = context.read<StoryNotifier>();
     await storyNotifier.getListStory(widget.userLoginEntity.token);
+  }
+
+  Future _refreshListStory() async {
+    final storyProvider = context.read<StoryNotifier>();
+    await storyProvider.refreshListStory(widget.userLoginEntity.token);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 }

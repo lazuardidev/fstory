@@ -28,9 +28,10 @@ class RepositoryImpl extends Repository {
   }
 
   @override
-  Future<Either<Failure, List<StoryEntity>>> getStoryList(String token) async {
+  Future<Either<Failure, List<StoryEntity>>> getStoryList(
+      String token, String page, String sizeItems) async {
     try {
-      final listStoryModel = await dataSource.getStoryList(token);
+      final listStoryModel = await dataSource.getStoryList(token, page, sizeItems);
       final storyDetailEntity = listStoryModel
           .map((storyModel) => storyModel.modelToEntity())
           .toList();
