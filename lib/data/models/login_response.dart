@@ -1,7 +1,8 @@
-import 'dart:convert';
-
 import 'package:fstory/data/models/login_model.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'login_response.g.dart';
 
+@JsonSerializable()
 class LoginResponse {
   bool error;
   String message;
@@ -13,20 +14,8 @@ class LoginResponse {
     required this.loginResult,
   });
 
-  factory LoginResponse.fromRawJson(String str) =>
-      LoginResponse.fromJson(json.decode(str));
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseFromJson(json);
 
-  String toRawJson() => json.encode(toJson());
-
-  factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-        error: json["error"],
-        message: json["message"],
-        loginResult: LoginModel.fromJson(json["loginResult"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "error": error,
-        "message": message,
-        "loginResult": loginResult.toJson(),
-      };
+  Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
 }

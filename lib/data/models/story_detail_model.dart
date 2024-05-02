@@ -1,6 +1,8 @@
-import 'dart:convert';
 import 'package:fstory/domain/entities/story_detail_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'story_detail_model.g.dart';
 
+@JsonSerializable()
 class StoryDetailModel {
   String id;
   String name;
@@ -20,22 +22,6 @@ class StoryDetailModel {
     this.lon,
   });
 
-  factory StoryDetailModel.fromRawJson(String str) =>
-      StoryDetailModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory StoryDetailModel.fromJson(Map<String, dynamic> json) =>
-      StoryDetailModel(
-        id: json["id"],
-        name: json["name"],
-        description: json["description"],
-        photoUrl: json["photoUrl"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        lat: json["lat"]?.toDouble(),
-        lon: json["lon"]?.toDouble(),
-      );
-
   StoryDetailEntity modelToEntity() => StoryDetailEntity(
       id: id,
       name: name,
@@ -45,13 +31,8 @@ class StoryDetailModel {
       lat: lat,
       lon: lon);
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "description": description,
-        "photoUrl": photoUrl,
-        "createdAt": createdAt.toIso8601String(),
-        "lat": lat,
-        "lon": lon,
-      };
+  factory StoryDetailModel.fromJson(Map<String, dynamic> json) =>
+      _$StoryDetailModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StoryDetailModelToJson(this);
 }
