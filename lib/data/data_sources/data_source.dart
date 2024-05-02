@@ -16,12 +16,8 @@ abstract class DataSource {
   Future<StoryDetailModel> getStoryDetail(String id, String token);
   Future<LoginModel> login(String email, String pass);
   Future<String> register(String name, String email, String pass);
-  Future<String> postStory(
-    String token,
-    String desc,
-    List<int> bytes,
-    String fileName,
-  );
+  Future<String> postStory(String token, String desc, List<int> bytes,
+      String fileName, double? lat, double? lon);
 }
 
 class DataSourceImpl implements DataSource {
@@ -117,16 +113,14 @@ class DataSourceImpl implements DataSource {
   }
 
   @override
-  Future<String> postStory(
-    String token,
-    String desc,
-    List<int> bytes,
-    String fileName,
-  ) async {
+  Future<String> postStory(String token, String desc, List<int> bytes,
+      String fileName, double? lat, double? lon) async {
     try {
       var formData = FormData.fromMap({
         'photo': MultipartFile.fromBytes(bytes, filename: fileName),
-        'description': desc
+        'description': desc,
+        'lat': lat,
+        'lon': lon,
       });
       final response = await dio.post("$baseUrl/stories",
           options: Options(headers: {

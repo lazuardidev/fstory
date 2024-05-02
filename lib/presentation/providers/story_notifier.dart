@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:fstory/domain/entities/story_detail_entity.dart';
 import 'package:fstory/domain/repositories/repository.dart';
@@ -99,7 +101,7 @@ class StoryNotifier extends ChangeNotifier {
   }
 
   Future postStory(String token, String desc, List<int> bytes, String filename,
-      Function() onSuccess) async {
+      LatLng? latLng) async {
     _postStoryState = PostStoryState.loading;
     notifyListeners();
 
@@ -107,15 +109,14 @@ class StoryNotifier extends ChangeNotifier {
     _postResponse = null;
 
     final Uint8List uint8List = Uint8List.fromList(bytes);
-    final responseFold =
-        await repository.postStory(token, desc, uint8List, filename);
+    final responseFold = await repository.postStory(
+        token, desc, uint8List, filename, latLng?.latitude, latLng?.longitude);
     responseFold.fold((error) {
       _errorMsg = error.msg;
       _postStoryState = PostStoryState.error;
     }, (response) {
       _postResponse = response;
       _postStoryState = PostStoryState.hasData;
-      onSuccess();
     });
     notifyListeners();
   }
@@ -138,10 +139,39 @@ class StoryNotifier extends ChangeNotifier {
     return newByte;
   }
 
+  void clearPreviousStory() {
+    imageFile = null;
+    imagePath = null;
+    _postStoryState = PostStoryState.init;
+    _postResponse = null;
+    _errorMsg = null;
+    notifyListeners();
+  }
+
   Future<void> refreshListStory(String token) async {
     _listStoryEntity = [];
     page = 1;
     _errorMsg = null;
     await getListStory(token);
+  }
+
+  Future<bool> askLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return false;
+    }
+    return true;
   }
 }

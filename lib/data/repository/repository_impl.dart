@@ -31,7 +31,8 @@ class RepositoryImpl extends Repository {
   Future<Either<Failure, List<StoryEntity>>> getStoryList(
       String token, String page, String sizeItems) async {
     try {
-      final listStoryModel = await dataSource.getStoryList(token, page, sizeItems);
+      final listStoryModel =
+          await dataSource.getStoryList(token, page, sizeItems);
       final storyDetailEntity = listStoryModel
           .map((storyModel) => storyModel.modelToEntity())
           .toList();
@@ -58,11 +59,11 @@ class RepositoryImpl extends Repository {
   }
 
   @override
-  Future<Either<Failure, String>> postStory(
-      String token, String desc, List<int> bytes, String fileName) async {
+  Future<Either<Failure, String>> postStory(String token, String desc,
+      List<int> bytes, String fileName, double? lat, double? lon) async {
     try {
       final storyResponse =
-          await dataSource.postStory(token, desc, bytes, fileName);
+          await dataSource.postStory(token, desc, bytes, fileName, lat, lon);
       return Right(storyResponse);
     } on ServerException catch (e) {
       return Left(ServerFailure("Upload failed!\nError Info: ${e.msg}"));

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fstory/presentation/widgets/loading.dart';
 import 'package:fstory/presentation/widgets/response_message.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../providers/story_notifier.dart';
@@ -16,6 +18,15 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  final LatLng _initLocation = const LatLng(-2.44565, 117.8888);
+  late GoogleMapController mapController;
+  late Set<Marker> markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +43,28 @@ class _DetailPageState extends State<DetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      provider.storyDetailEntity?.lat != null
+                          ? SizedBox(
+                              height: MediaQuery.of(context).size.height / 3,
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                    target: _initLocation, zoom: 4),
+                                markers: markers,
+                                onMapCreated: (controller) {
+                                  setState(() {
+                                    mapController = controller;
+                                  });
+                                  provider.storyDetailEntity?.lat != null
+                                      ? _setStoryMarker(LatLng(
+                                          provider.storyDetailEntity!.lat ?? 0,
+                                          provider.storyDetailEntity!.lon ?? 0))
+                                      : null;
+                                },
+                              ))
+                          : const SizedBox(),
+                      const SizedBox(
+                        height: 16,
+                      ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: SizedBox(
@@ -125,5 +158,23 @@ class _DetailPageState extends State<DetailPage> {
             },
           ),
         ));
+  }
+
+  void _setStoryMarker(LatLng latLng) async {
+    final info =
+        await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+    final place = info[0];
+    final street = place.street ?? "street";
+    final address = '${place.subLocality}, ${place.country}';
+    setState(() {
+      markers.clear();
+      markers.add(Marker(
+          markerId: const MarkerId("source"),
+          position: LatLng(latLng.latitude, latLng.longitude),
+          infoWindow: InfoWindow(title: street, snippet: address)));
+      mapController.animateCamera(
+        CameraUpdate.newLatLngZoom(latLng, 13),
+      );
+    });
   }
 }
